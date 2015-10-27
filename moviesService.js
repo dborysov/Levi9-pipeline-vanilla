@@ -1,6 +1,5 @@
-"use strict";
-
 window.moviesService = (function(){
+	"use strict";
 	var moviesList = [];
 	function fetchItems(cb) {
 		var xmlhttp = new XMLHttpRequest();

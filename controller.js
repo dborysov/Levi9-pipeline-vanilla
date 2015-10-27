@@ -1,6 +1,6 @@
-"use strict";
-
 window.controller = (function(){
+	"use strict";
+
 	var listElement = document.getElementById('list-container');
 	var cardElement = document.getElementById('card-container');
 
@@ -34,11 +34,14 @@ window.controller = (function(){
 	function drawDetails(movie) {
 			var backButton = document.createElement('BUTTON');
 			backButton.innerText = "Back";
+			backButton.classList.add('btn');
+			backButton.classList.add('btn-default');
 			backButton.onclick = showList;
 			var abstract = document.createElement('DIV');
 			abstract.innerText = movie.abstract;
 			var externalLink = document.createElement('A');
 			externalLink.href = movie.url;
+			externalLink.innerText = "Show more...";
 
 			while(cardElement.firstChild) {
 				cardElement.removeChild(cardElement.firstChild);
@@ -53,10 +56,12 @@ window.controller = (function(){
 
 	function drawTableHeader(table, captions) {
 		var tableHeader = document.createElement('THEAD');
+		var row = document.createElement('TR');
+		tableHeader.appendChild(row);
 		for(var el of captions){
-			var caption = document.createElement('TD');
+			var caption = document.createElement('TH');
 			caption.textContent = el;
-			tableHeader.appendChild(caption);
+			row.appendChild(caption);
 		}
 
 		table.appendChild(tableHeader);
@@ -64,16 +69,20 @@ window.controller = (function(){
 
 	function drawList(list) {
 		var table = document.createElement('TABLE');
-		table.onclick = event => {
+		table.classList.add('table');
+		
+		drawTableHeader(table, ['image', 'title'])
+
+		var tableBody = document.createElement('TBODY');
+		tableBody.onclick = event => {
 			var id = +event.path.find(el => el.nodeName === 'TR').attributes.getNamedItem('data-id').value;
 			var movie = moviesService.getMoviesList().find(m => m.id === id);
 			drawDetails(movie);
 		}
-		
-		drawTableHeader(table, ['image', 'title'])
+		table.appendChild(tableBody);
 
 		for(var el of list){
-			table.appendChild(createRow(el));
+			tableBody.appendChild(createRow(el));
 		}
 
 		listElement.appendChild(table);

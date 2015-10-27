@@ -17,8 +17,6 @@ window.controller = (function(){
 	function createRow(el){
 		var row = document.createElement('TR');
 			row.setAttribute('data-id', el.id);
-			row.onclick = event => {
-			};
 			var imgCell = document.createElement('TD');
 			var titleCell = document.createElement('TD');
 			var image = document.createElement('IMG');

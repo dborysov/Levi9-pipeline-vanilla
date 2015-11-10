@@ -70,7 +70,7 @@ window.controller = (() => {
         var table = document.createElement('TABLE');
         table.classList.add('table');
 
-        drawTableHeader(table, ['image', 'title'])
+        drawTableHeader(table, ['avatar', 'login'])
 
         var tableBody = document.createElement('TBODY');
         tableBody.onclick = event => {

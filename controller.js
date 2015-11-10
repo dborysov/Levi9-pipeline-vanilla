@@ -1,92 +1,93 @@
-window.controller = (function(){
-	"use strict";
+window.controller = (() => {
+    "use strict";
 
-	var listElement = document.getElementById('list-container');
-	var cardElement = document.getElementById('card-container');
+    var listElement = document.getElementById('list-container');
+    var cardElement = document.getElementById('card-container');
 
-	function showList() {
-		listElement.style.display = 'block';
-		cardElement.style.display = 'none';
-	}
+    function showList() {
+        listElement.style.display = 'block';
+        cardElement.style.display = 'none';
+    }
 
-	function showDetails() {
-		listElement.style.display = 'none';
-		cardElement.style.display = 'block';
-	}
+    function showDetails() {
+        listElement.style.display = 'none';
+        cardElement.style.display = 'block';
+    }
 
-	function createRow(el){
-		var row = document.createElement('TR');
-			row.setAttribute('data-id', el.id);
-			var imgCell = document.createElement('TD');
-			var titleCell = document.createElement('TD');
-			var image = document.createElement('IMG');
-			image.src = el.media[0]['media-metadata'][0].url
-			imgCell.appendChild(image);
-			titleCell.textContent = el.title;
-			row.appendChild(imgCell);
-			row.appendChild(titleCell);
+    function createRow(el) {
+        var row = document.createElement('TR');
+        row.setAttribute('data-id', el.id);
+        var imgCell = document.createElement('TD');
+        var titleCell = document.createElement('TD');
+        var image = document.createElement('IMG');
+        image.src = el.avatar_url
+        image.width = 100;
+        imgCell.appendChild(image);
+        titleCell.textContent = el.login;
+        row.appendChild(imgCell);
+        row.appendChild(titleCell);
 
-			return row;
-	}
+        return row;
+    }
 
-	function drawDetails(movie) {
-			var backButton = document.createElement('BUTTON');
-			backButton.innerText = "Back";
-			backButton.classList.add('btn');
-			backButton.classList.add('btn-default');
-			backButton.onclick = showList;
-			var abstract = document.createElement('DIV');
-			abstract.innerText = movie.abstract;
-			var externalLink = document.createElement('A');
-			externalLink.href = movie.url;
-			externalLink.innerText = "Show more...";
+    function drawDetails(account) {
+        var backButton = document.createElement('BUTTON');
+        backButton.innerText = "Back";
+        backButton.classList.add('btn');
+        backButton.classList.add('btn-default');
+        backButton.onclick = showList;
+        var login = document.createElement('DIV');
+        login.innerText = `${account.login} (${account.site_admin ? 'admin' : 'user'})`;
+        var externalLink = document.createElement('A');
+        externalLink.href = account.html_url;
+        externalLink.innerText = "Show more...";
 
-			while(cardElement.firstChild) {
-				cardElement.removeChild(cardElement.firstChild);
-			}
+        while (cardElement.firstChild) {
+            cardElement.removeChild(cardElement.firstChild);
+        }
 
-			cardElement.appendChild(backButton);
-			cardElement.appendChild(abstract);
-			cardElement.appendChild(externalLink);
+        cardElement.appendChild(backButton);
+        cardElement.appendChild(login);
+        cardElement.appendChild(externalLink);
 
-			showDetails();
-	}
+        showDetails();
+    }
 
-	function drawTableHeader(table, captions) {
-		var tableHeader = document.createElement('THEAD');
-		var row = document.createElement('TR');
-		tableHeader.appendChild(row);
-		for(var el of captions){
-			var caption = document.createElement('TH');
-			caption.textContent = el;
-			row.appendChild(caption);
-		}
+    function drawTableHeader(table, captions) {
+        var tableHeader = document.createElement('THEAD');
+        var row = document.createElement('TR');
+        tableHeader.appendChild(row);
+        for (var el of captions) {
+            var caption = document.createElement('TH');
+            caption.textContent = el;
+            row.appendChild(caption);
+        }
 
-		table.appendChild(tableHeader);
-	}
+        table.appendChild(tableHeader);
+    }
 
-	function drawList(list) {
-		var table = document.createElement('TABLE');
-		table.classList.add('table');
-		
-		drawTableHeader(table, ['image', 'title'])
+    function drawList(list) {
+        var table = document.createElement('TABLE');
+        table.classList.add('table');
 
-		var tableBody = document.createElement('TBODY');
-		tableBody.onclick = event => {
-			var id = +event.path.find(el => el.nodeName === 'TR').attributes.getNamedItem('data-id').value;
-			var movie = moviesService.getMoviesList().find(m => m.id === id);
-			drawDetails(movie);
-		}
-		table.appendChild(tableBody);
+        drawTableHeader(table, ['image', 'title'])
 
-		for(var el of list){
-			tableBody.appendChild(createRow(el));
-		}
+        var tableBody = document.createElement('TBODY');
+        tableBody.onclick = event => {
+            var id = +event.path.find(el => el.nodeName === 'TR').attributes.getNamedItem('data-id').value;
+            var account = accountsService.getAccountsList().find(m => m.id === id);
+            drawDetails(account);
+        }
+        table.appendChild(tableBody);
 
-		listElement.appendChild(table);
-	}	
+        for (var el of list) {
+            tableBody.appendChild(createRow(el));
+        }
 
-	return {
-		drawList: drawList
-	}
-})()
+        listElement.appendChild(table);
+    }
+
+    return {
+        drawList: drawList
+    }
+})();

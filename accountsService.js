@@ -7,7 +7,7 @@ window.accountsService = (() => {
         var url = "https://api.github.com/users";
 
         xmlhttp.onreadystatechange = () => {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status == 200) {
                 accountsList = JSON.parse(xmlhttp.responseText);
                 cb(accountsList);
             }
